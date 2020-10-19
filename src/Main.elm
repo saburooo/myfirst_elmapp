@@ -10,8 +10,12 @@ import Jsoon.Decode exposing (Decoder)
 -- MODEL
 
 type alias Model =
-    { base : String
+    { title : String
+    , name : String
+    , basic : String
+    , episode : String
     , appeal : String
+    , email : String
     }
 
 
@@ -21,18 +25,35 @@ type alias Model =
 ここでJSONファイルから文章を生成したい、Reactとどっちにしようかマジで迷う・・・
 -}
 type Msg
-    = Base
+    = Title
+    | Name
+    | Basic
+    | Episode
     | Appeal
+    | Email
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Base ->
-            model.base
+
+        Title ->
+            model.title
+
+        Name ->
+            model.name
+
+        Basic ->
+            model.basic
+
+        Episode ->
+            model.episode
 
         Appeal ->
             model.appeal
+
+        Email ->
+            model.email
 
 
 -- VIEW
@@ -41,5 +62,9 @@ view : Model -> Html Msg
 view model =
     div []
         [ button [ onClick Base ] [text "基本情報"]
+        , button [ onClick Appeal ] [text "アピールポイント"]
+        , button [ onClick Appeal ] [text "アピールポイント"]
+        , button [ onClick Appeal ] [text "アピールポイント"]
+        , button [ onClick Appeal ] [text "アピールポイント"]
         , button [ onClick Appeal ] [text "アピールポイント"]
         ]
