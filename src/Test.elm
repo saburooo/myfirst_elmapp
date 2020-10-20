@@ -1,4 +1,4 @@
-module Test exposing (main)
+module Test exposing (main, Model)
 
 import Browser
 import Html exposing (Html, button, div, text)
@@ -102,3 +102,9 @@ view model =
         , button [ onClick Appeal ] [text "アピールポイント"]
         , button [ onClick Email ] [text "メールアドレス"]
         ]
+
+
+-- HTTP
+
+
+getSentence:Cmd Msg
