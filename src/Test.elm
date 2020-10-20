@@ -4,7 +4,7 @@ import Browser
 import Html exposing (Html, button, div, text)
 import Html.Events exposing (onClick)
 
-import Json.Decode exposing (Decoder, field, string)
+import Json.Decode exposing (Decoder, field, string, map6)
 
 
 -- MAIN
@@ -30,9 +30,27 @@ type alias Model =
     }
 
 
-aboutDecoder:Decoder Model =
+aboutDecoder:Decoder Model
 aboutDecoder =
-    Decoder.map6
+    map6 Model
+        (field "title" string)
+        (field "name" string)
+        (field "basic" string)
+        (field "episode" string)
+        (field "email" string)
+
+
+
+type Model
+    = Failure
+    | Loading
+    | Success String
+
+
+
+init:() -> (Model, Cmd Msg)
+init _ =
+    (Loading getJsonSentence)
 
 
 -- UPDATE
