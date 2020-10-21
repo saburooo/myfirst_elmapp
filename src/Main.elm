@@ -12,11 +12,13 @@ import Http
 -- MAIN
 main : Program () Model Msg
 main =
-    Browser.element
+    Browser.application 
         { init = init
         , view = view
         , update = update
         , subscriptions = subscriptions
+        , onUrlChange = UrlChanged
+        , onUrlRequest = LinkClicked
         }
 
 
@@ -32,16 +34,6 @@ type alias About =
     }
 
 
-aboutDecoder:Decoder About
-aboutDecoder =
-    map6 Model
-        (field "title" string)
-        (field "name" string)
-        (field "basic" string)
-        (field "episode" string)
-        (field "email" string)
-
-
 
 type Model
     = Failure
@@ -50,9 +42,10 @@ type Model
 
 
 
-init:() -> (Model, Cmd Msg)
+init:() -> (Model, Cmd Msg, About)
 init _ =
-    (Loading getJsonSentence)
+    (Loading getJsonSentence "")
+
 
 
 -- UPDATE
@@ -69,8 +62,6 @@ type Msg
     | Email
 
 
-getSentence: Http -> Msg
-getSentence 
 
 
 update : Msg -> About -> About
@@ -112,4 +103,22 @@ view model =
 
 
 -- HTTP
+
+
+getSentence: Cmd Msg
+getSentence =
+    Http.get
+        { url = "http://localhost:8000/api/?format=1"
+        , expect = Http.expectJson aboutDecoder
+        }
+
+
+aboutDecoder:Decoder About
+aboutDecoder =
+    map6 Model
+        (field "title" string)
+        (field "name" string)
+        (field "basic" string)
+        (field "episode" string)
+        (field "email" string)
 
