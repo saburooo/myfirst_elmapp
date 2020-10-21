@@ -1,15 +1,28 @@
-module Main exposing (main)
+module Main exposing (main, Model)
 
 import Browser
 import Html exposing (Html, button, div, text)
+import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 
-import Jsoon.Decode exposing (Decoder)
+import Json.Decode exposing (Decoder, field, string, map6)
+import Http
+
+
+-- MAIN
+main : Program () Model Msg
+main =
+    Browser.element
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }
 
 
 -- MODEL
 
-type alias Model =
+type alias About =
     { title : String
     , name : String
     , basic : String
@@ -19,10 +32,33 @@ type alias Model =
     }
 
 
+aboutDecoder:Decoder About
+aboutDecoder =
+    map6 Model
+        (field "title" string)
+        (field "name" string)
+        (field "basic" string)
+        (field "episode" string)
+        (field "email" string)
+
+
+
+type Model
+    = Failure
+    | Loading
+    | Success String
+
+
+
+init:() -> (Model, Cmd Msg)
+init _ =
+    (Loading getJsonSentence)
+
+
 -- UPDATE
 
 {-
-ここでJSONファイルから文章を生成したい、Reactとどっちにしようかマジで迷う・・・
+ここでJSONファイルから文章を生成したい、
 -}
 type Msg
     = Title
@@ -33,7 +69,11 @@ type Msg
     | Email
 
 
-update : Msg -> Model -> Model
+getSentence: Http -> Msg
+getSentence 
+
+
+update : Msg -> About -> About
 update msg model =
     case msg of
 
@@ -61,10 +101,15 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick Base ] [text "基本情報"]
+        [ button [ onClick Title ] [text "どうも"]
+        , button [ onClick Name ] [text "お名前"]
+        , button [ onClick Basic ] [text "基本情報"]
+        , button [ onClick Episode ] [text "エピソード"]
         , button [ onClick Appeal ] [text "アピールポイント"]
-        , button [ onClick Appeal ] [text "アピールポイント"]
-        , button [ onClick Appeal ] [text "アピールポイント"]
-        , button [ onClick Appeal ] [text "アピールポイント"]
-        , button [ onClick Appeal ] [text "アピールポイント"]
+        , button [ onClick Email ] [text "メールアドレス"]
+        , p [] [text getSentence Msg ]
         ]
+
+
+-- HTTP
+
