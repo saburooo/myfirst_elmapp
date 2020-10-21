@@ -1,28 +1,125 @@
 module Main exposing (main, Model)
 
 import Browser
-import Html exposing (Html, button, div, text)
+import Browser.Navigation as Nav
+
+import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 
-import Json.Decode exposing (Decoder, field, string, map6)
+import Url
+
+import Json.Decode as D exposing (Decoder)
+
 import Http
 
 
 -- MAIN
 main : Program () Model Msg
 main =
-    Browser.application 
+    Browser.element
         { init = init
-        , view = view
         , update = update
         , subscriptions = subscriptions
-        , onUrlChange = UrlChanged
-        , onUrlRequest = LinkClicked
+        , view = view
         }
 
 
 -- MODEL
+
+type Model
+    = Failure
+    | Loading
+    | Success String
+
+
+
+
+init : () -> (Model, Cmd Msg)
+init _ =
+    ( Loading
+    , getAboutJson
+    )
+
+
+
+-- UPDATE
+
+
+type Msg
+    = MorePlease
+    | GotSentence (Result Http.Error String)
+
+
+update : Msg -> Model -> (Model, Cmd Msg)
+update msg model =
+  case msg of
+    MorePlease ->
+        (Loading, getAboutJson)
+
+    GotSentence result ->
+        case result of
+            Ok url ->
+                (Success url, Cmd.none)
+
+            Err _ ->
+                (Failure, Cmd.none)
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+    Sub.none
+
+
+-- VIEW
+
+
+view : Model -> Html Msg
+view model =
+    div []
+        [ h2 [] [ text "自己紹介するね！！！" ]
+        , viewSentence model
+        ]
+
+
+
+viewSentence : Model -> Html Msg
+viewSentence model =
+    case model of
+        Failure ->
+            div []
+                [ text "スマヌ、ミツカラナカッタ"
+                , button [ onClick MorePlease ] [ text "もっかいやる" ]
+                ]
+        
+        Loading ->
+            text "Loading"
+        
+        Success url ->
+            div []
+                [ button [ onClick MorePlease, style "display" "block" ] [ text "More Please!" ]
+                , [ text url ] [] 
+                ]
+
+
+
+-- HTTP
+
+
+getAboutJson : Cmd Msg
+getAboutJson =
+    Http.get
+        { url = "http://127.0.0.1:8000/api/"
+        , expect = Http.expectJson GotSentence aboutDecoder
+        }
+
+
+
+-- DATA
+
 
 type alias About =
     { title : String
@@ -34,91 +131,6 @@ type alias About =
     }
 
 
-
-type Model
-    = Failure
-    | Loading
-    | Success String
-
-
-
-init:() -> (Model, Cmd Msg, About)
-init _ =
-    (Loading getJsonSentence "")
-
-
-
--- UPDATE
-
-{-
-ここでJSONファイルから文章を生成したい、
--}
-type Msg
-    = Title
-    | Name
-    | Basic
-    | Episode
-    | Appeal
-    | Email
-
-
-
-
-update : Msg -> About -> About
-update msg model =
-    case msg of
-
-        Title ->
-            model.title
-
-        Name ->
-            model.name
-
-        Basic ->
-            model.basic
-
-        Episode ->
-            model.episode
-
-        Appeal ->
-            model.appeal
-
-        Email ->
-            model.email
-
-
--- VIEW
-
-view : Model -> Html Msg
-view model =
-    div []
-        [ button [ onClick Title ] [text "どうも"]
-        , button [ onClick Name ] [text "お名前"]
-        , button [ onClick Basic ] [text "基本情報"]
-        , button [ onClick Episode ] [text "エピソード"]
-        , button [ onClick Appeal ] [text "アピールポイント"]
-        , button [ onClick Email ] [text "メールアドレス"]
-        , p [] [text getSentence Msg ]
-        ]
-
-
--- HTTP
-
-
-getSentence: Cmd Msg
-getSentence =
-    Http.get
-        { url = "http://localhost:8000/api/?format=1"
-        , expect = Http.expectJson aboutDecoder
-        }
-
-
-aboutDecoder:Decoder About
+aboutDecoder : Decoder String
 aboutDecoder =
-    map6 Model
-        (field "title" string)
-        (field "name" string)
-        (field "basic" string)
-        (field "episode" string)
-        (field "email" string)
-
+    D.field "title" (D.field "name" D.string)
