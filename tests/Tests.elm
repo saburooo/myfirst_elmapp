@@ -1,12 +1,39 @@
 module Tests exposing (..)
 
-import Test exposing (Test)
-import Test exposing (describe)
-import Http exposing (get)
+import Expect exposing (Expectation)
+import Fuzz exposing (Fuzzer, int, list, string)
+import Test exposing (..)
+
+
+type About
+    = Title
+    | Name
+    | Basic
+    | Episode
+    | Appeal
+    | Email
+
+
+
+updateAbout : About -> String
+updateAbout about =
+    case about of
+        Title -> "title"
+        
+        Name -> "name"
+
+        Basic -> "basic"
+
+        Episode -> "episode"
+
+        Appeal -> "appeal"
+
+        Email -> "email"
+
 
 suite : Test
 suite =
-    describe "URLをゲットしたいな"
-        [ describe "Http.get"
-            [ test ]
+    describe "type About -> updateAbout about"
+        [ test "get string" 
+            updateAbout Title
         ]

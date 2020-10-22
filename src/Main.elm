@@ -66,6 +66,24 @@ update msg model =
                 (Failure, Cmd.none)
 
 
+updateAbout : About -> (Cmd About)
+updateAbout about =
+    case about of
+        title -> "title"
+        
+        name -> "name"
+
+        basic -> "basic"
+
+        episode -> "episode"
+
+        appeal -> "appeal"
+
+        email -> "email"
+
+
+
+
 -- SUBSCRIPTIONS
 
 
@@ -100,8 +118,8 @@ viewSentence model =
         
         Success url ->
             div []
-                [ button [ onClick MorePlease, style "display" "block" ] [ text "More Please!" ]
-                , [ text url ] [] 
+                [ button [ onClick MorePlease ] [ text "More Please!" ]
+                , p [] [ text url ] 
                 ]
 
 
@@ -121,7 +139,7 @@ getAboutJson =
 -- DATA
 
 
-type alias About =
+type About =
     { title : String
     , name : String
     , basic : String
@@ -133,4 +151,4 @@ type alias About =
 
 aboutDecoder : Decoder String
 aboutDecoder =
-    D.field "title" (D.field "name" D.string)
+    D.field "title" D.string
