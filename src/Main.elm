@@ -12,6 +12,7 @@ import Url
 import Json.Decode as D exposing (Decoder)
 
 import Http
+import Test.Internal exposing (toString)
 
 
 -- MAIN
@@ -66,7 +67,7 @@ update msg model =
                 (Failure, Cmd.none)
 
 
-updateAbout : About -> (Cmd About)
+updateAbout : About -> String
 updateAbout about =
     case about of
         title -> "title"
@@ -95,11 +96,17 @@ subscriptions _ =
 -- VIEW
 
 
-view : Model -> Html Msg
-view model =
+view : Model -> About -> Html Msg
+view model about =
     div []
         [ h2 [] [ text "自己紹介するね！！！" ]
-        , viewSentence model
+        , button [ onClick Title ] [ text "タイトル" ]
+        , button [ onClick Name ] [ text "お名前" ]
+        , button [ onClick Basic ] [ text "基本情報" ]
+        , button [ onClick Episode ] [ text "エピソード" ]
+        , button [ onClick Appeal ] [ text "アピールポイント" ]
+        , button [ onClick Email ] [ text "メールアドレス" ]
+        , div [] [ text (toString about )]
         ]
 
 
@@ -119,7 +126,6 @@ viewSentence model =
         Success url ->
             div []
                 [ button [ onClick MorePlease ] [ text "More Please!" ]
-                , p [] [ text url ] 
                 ]
 
 
@@ -131,7 +137,7 @@ getAboutJson : Cmd Msg
 getAboutJson =
     Http.get
         { url = "http://127.0.0.1:8000/api/"
-        , expect = Http.expectJson GotSentence aboutDecoder
+        , expect = Http.expectJson GotSentence
         }
 
 
@@ -139,16 +145,11 @@ getAboutJson =
 -- DATA
 
 
-type About =
-    { title : String
-    , name : String
-    , basic : String
-    , episode : String
-    , appeal : String
-    , email : String
-    }
+type About 
+    = Title String
+    | Name String
+    | Basic String
+    | Episode String
+    | Appeal String
+    | Email String
 
-
-aboutDecoder : Decoder String
-aboutDecoder =
-    D.field "title" D.string
