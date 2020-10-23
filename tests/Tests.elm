@@ -5,6 +5,7 @@ import Fuzz exposing (Fuzzer, int, list, string)
 import Test exposing (..)
 
 import Json.Decode as D exposing (Decoder)
+import Http exposing (..) 
 
 
 type About
@@ -15,6 +16,10 @@ type About
     | Appeal
     | Email
 
+
+type Msg
+    = WaitToClickButton
+    | GotItems (Result Http.Error String)
 
 
 updateAbout : About -> String
@@ -35,12 +40,12 @@ updateAbout about =
 
 
 type alias AboutJson =
-    { "title" : "釣り"
-    , "name" : "濱口優"
-    , "basic" : "よゐこのツッコミ担当"
-    , "episode" : "京都での仕事に「いろいろあって遅れてしまった」という濱口は、相方・有野晋哉（48）から「お前、はよ来いや！」と電話があったと回想。その後、大坂から慌てて出発した濱口は、「京都に向かうんですけど、向かってたどり着いたらなぜか奈良だったんですよ」"
-    , "appeal" : "モリ突きができます"
-    , "email" : "hamaguchi@masaru.com" 
+    { title : String
+    , name : String
+    , basic : String
+    , episode : String
+    , appeal : String
+    , email : String
     }
 
 
@@ -90,5 +95,20 @@ suite =
                     answer06 = "email"
                 in
                     Expect.equal answer06 (updateAbout Email)
-        , todo "Jsonから値を取り出せるか？"
         ]
+
+
+
+getAboutJson : Cmd Msg
+getAboutJson =
+    Http.get
+        { url = "http://127.0.0.1:8000/api/"
+        , expect = Http.expectJson GotItems (D.field "title" D.string)
+        }
+
+httpAboutTest : Test
+httpAboutTest =
+    [ test "URL取得できるかな？" <|
+        \_ ->
+            getAboutJson
+    ]
