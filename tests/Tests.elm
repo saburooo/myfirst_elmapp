@@ -3,9 +3,14 @@ module Tests exposing (..)
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
 import Test exposing (..)
+import Test.Html.Event as Event
+import Test.Html.Query as Query
 
 import Json.Decode as D exposing (Decoder)
 import Http exposing (..) 
+import Json.Decode exposing (field, map6)
+import Html exposing (text)
+import Html.Events exposing (onInput)
 
 
 type About
@@ -19,7 +24,7 @@ type About
 
 type Msg
     = WaitToClickButton
-    | GotItems (Result Http.Error String)
+    | GotSentence (Result Http.Error String)
 
 
 updateAbout : About -> String
@@ -49,10 +54,6 @@ type alias AboutJson =
     }
 
 
-
-aboutDecoder : String -> Decoder String
-aboutDecoder aboutstr =
-    D.field aboutstr D.string
 
 
 
@@ -102,13 +103,32 @@ suite =
 getAboutJson : Cmd Msg
 getAboutJson =
     Http.get
-        { url = "http://127.0.0.1:8000/api/"
-        , expect = Http.expectJson GotItems (D.field "title" D.string)
+        { url = "http://127.0.0.1:8000/api/1"
+        , expect = Http.expectJson GotSentence aboutDecoder
         }
 
+
+aboutDecoder : Decoder AboutJson
+aboutDecoder =
+    map6 AboutJson
+        (D.field "title" D.string)
+        (D.field "name" D.string)
+        (D.field "basic"  D.string)
+        (D.field "episode" D.string)
+        (D.field "appeal" D.string)
+        (D.field "email" D.string)
+
+
+
+{- 
 httpAboutTest : Test
 httpAboutTest =
-    [ test "URL取得できるかな？" <|
-        \_ ->
-            getAboutJson
-    ]
+    describe "JSONファイル関係のテストがしたい。"
+        [ test "URL取得できるかな？" <|
+            \_ ->
+                let
+                    getAboutJson
+                in
+                    aboutDecoder
+        ]
+-}
