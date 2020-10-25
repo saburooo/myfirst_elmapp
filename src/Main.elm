@@ -4,7 +4,7 @@ import Browser
 import Browser.Navigation as Nav
 
 import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 
 import Url
@@ -112,7 +112,7 @@ subscriptions _ =
 view : Model -> Html Msg
 view model =
     div []
-        [ h2 [] [ text "自己紹介するね！！！" ]
+        [ h1 [] [ text "自己紹介するね！！！" ]
         , viewSentence model
         ]
 
@@ -136,12 +136,16 @@ viewSentence model =
                     ]
 
         Loaded about ->
-            div []
-                [ p [] [ text about.title ]
-                , p [] [ text about.name ]
+            div [ class "base_ly"]
+                [ h2 [] [ text about.title ]
+                , p [] [ text ("名前：" ++ about.name) ]
+                , h2 [] [ text "基本情報" ]
                 , p [] [ text about.basic ]
+                , h2 [] [ text "エピソード" ]
                 , p [] [ text about.episode ]
+                , h2 [] [ text "アピールポイント" ]
                 , p [] [ text about.appeal ]
+                , h2 [] [ text "Eメール" ]
                 , p [] [ text about.email ]
                 ]
 
