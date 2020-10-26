@@ -62,6 +62,8 @@ init _ =
 type Msg
     = GotWaiting
     | GotSentence (Result Http.Error AboutJson)
+-- ここにAboutと同じ型を導入したらどうかな？
+
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -150,12 +152,12 @@ viewSentence model =
                 ]
 
 {-
-                [ button [ onClick model.about Title ] [ text "題名" ]
-                , button [ onClick model.about Name ] [ text "名前" ]
-                , button [ onClick model.about Basic ] [ text "基本" ]
-                , button [ onClick model.about Episode ] [ text "エピソード" ]
-                , button [ onClick model.about Episode ] [ text "アピール" ]
-                , button [ onClick model.about Episode ] [ text "Eメール" ]
+                [ button [ onClick model.about ] [ text "題名" ]
+                , button [ onClick model.about ] [ text "名前" ]
+                , button [ onClick model.about ] [ text "基本" ]
+                , button [ onClick model.about ] [ text "エピソード" ]
+                , button [ onClick model.about ] [ text "アピール" ]
+                , button [ onClick model.about ] [ text "Eメール" ]
                 ]
 -} 
     
