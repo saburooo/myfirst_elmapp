@@ -115,7 +115,7 @@ subscriptions _ =
 view : Model -> Html Msg
 view model =
     div []
-        [ h1 [] [ text "自己紹介するね！！！" ]
+        [ h1 [ class "center-title" ] [ text "自己紹介するね！！！" ]
         , viewSentence model
         ]
 
@@ -186,6 +186,12 @@ aboutDecoder =
         (field "episode" string)
         (field "appeal" string)
         (field "email" string)
+
+
+
+aboutChoiceDecoder : String -> Decoder String
+aboutChoiceDecoder choice = 
+    (field choice string)
 
 
 
