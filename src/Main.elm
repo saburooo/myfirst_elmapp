@@ -9,12 +9,16 @@ import Html.Events exposing (onClick)
 
 import Url
 
-import Json.Decode exposing (Decoder, field, string, map6, decodeString)
+import Json.Decode as D exposing (Decoder, field, string, map, map6, decodeString)
 
 import Http
 import Url exposing (toString)
 
-import Svg exposing ()
+import Svg
+import Svg.Attributes as Attribute
+import Html.Attributes exposing (width)
+import Html.Attributes exposing (height)
+import Html.Attributes exposing (src)
 
 -- MAIN
 main : Program () Model Msg
@@ -115,8 +119,8 @@ subscriptions _ =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ h1 [ class "center-title" ] [ text "自己紹介するね！！！" ]
+    div [ class "center-title" ]
+        [ h1 [] [ text "自己紹介するね" ]
         , viewSentence model
         ]
 
@@ -128,20 +132,33 @@ viewSentence model =
     case model.state of
         Waiting ->
             div []
-                [ h6 [] [ text "待っててください" ] ]
+                [ h6 [] [ text "待っててください" ]
+                , p [] [ text "ローディングアニメーション入れるとかさ" ]
+                ]
         
         Failure error ->
             let
                 _ = Debug.log "model" model
             in
                 div [ class "base_ly" ]
-                    [ p [] [ text ("名前：" ++ (Debug.toString error)) ] 
-                    , p [] [ text (Debug.toString model) ] 
+                    [ h2 [] [ text "タイトル"]
+                    , p [] [ text ("名前：" ++ (Debug.toString error)) ] 
+                    , h2 [] [ text "タイトル"]
+                    , p [] [ text ("名前：" ++ (Debug.toString error)) ] 
+                    , h2 [] [ text "タイトル"]
+                    , p [] [ text ("名前：" ++ (Debug.toString error)) ] 
+                    , h2 [] [ text "タイトル"]
+                    , p [] [ text ("名前：" ++ (Debug.toString error)) ] 
+                    , h2 [] [ text "タイトル"]
+                    , p [] [ text ("名前：" ++ (Debug.toString error)) ] 
+                    , h2 [] [ text "タイトル"]
+                    , p [] [ text ("名前：" ++ (Debug.toString error)) ] 
                     ]
 
         Loaded about ->
             div [ class "base_ly"]
-                [ h2 [] [ text about.title ]
+                [ Html.img [ src "http://placehold.it/640x340/27709b/ffffff" ] []
+                , h2 [] [ text about.title ]
                 , p [] [ text ("名前：" ++ about.name) ]
                 , h2 [] [ text "基本情報" ]
                 , p [] [ text about.basic ]
@@ -191,11 +208,6 @@ aboutDecoder =
         (field "appeal" string)
         (field "email" string)
 
-
-
-aboutChoiceDecoder : String -> Decoder String
-aboutChoiceDecoder choice = 
-    (field choice string)
 
 
 
