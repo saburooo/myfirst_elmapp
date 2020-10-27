@@ -119,16 +119,8 @@ aboutDecoder =
         (D.field "email" D.string)
 
 
-
-{- 
-httpAboutTest : Test
-httpAboutTest =
-    describe "JSONファイル関係のテストがしたい。"
-        [ test "URL取得できるかな？" <|
-            \_ ->
-                let
-                    getAboutJson
-                in
-                    aboutDecoder
-        ]
--}
+aboutChoiceDecoder : About -> Cmd Msg
+aboutChoiceDecoder about =
+    case about of
+        Title -> 
+            (D.field "title" D.string)

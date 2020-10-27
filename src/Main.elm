@@ -14,6 +14,7 @@ import Json.Decode exposing (Decoder, field, string, map6, decodeString)
 import Http
 import Url exposing (toString)
 
+import Svg exposing ()
 
 -- MAIN
 main : Program () Model Msg
@@ -133,8 +134,8 @@ viewSentence model =
             let
                 _ = Debug.log "model" model
             in
-                div []
-                    [ p [] [ text (Debug.toString error) ] 
+                div [ class "base_ly" ]
+                    [ p [] [ text ("名前：" ++ (Debug.toString error)) ] 
                     , p [] [ text (Debug.toString model) ] 
                     ]
 
@@ -173,6 +174,9 @@ getAboutJson =
         }
 
 
+{-
+About を受け取って Cmd Msgを返す関数を定義すればいいんじゃね？
+-}
 
 -- DATA
 

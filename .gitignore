@@ -2,3 +2,6 @@ elm-stuff/
 index.html
 dist/
 .cache
+node_modules
+package-lock.json
+package.json
