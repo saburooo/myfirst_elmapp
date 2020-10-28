@@ -4,7 +4,7 @@ import Browser
 import Browser.Navigation as Nav
 
 import Html exposing (..)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (class, src)
 import Html.Events exposing (onClick)
 
 import Url
@@ -14,11 +14,6 @@ import Json.Decode as D exposing (Decoder, field, string, map, map6, decodeStrin
 import Http
 import Url exposing (toString)
 
-import Svg
-import Svg.Attributes as Attribute
-import Html.Attributes exposing (width)
-import Html.Attributes exposing (height)
-import Html.Attributes exposing (src)
 
 -- MAIN
 main : Program () Model Msg
@@ -67,8 +62,7 @@ init _ =
 type Msg
     = GotWaiting
     | GotSentence (Result Http.Error AboutJson)
--- ここにAboutと同じ型を導入したらどうかな？
-
+    | GotPartsSentence (Result Http.Error AboutJson) 
 
 
 
@@ -79,6 +73,14 @@ update msg model =
         (model, getAboutJson)
 
     GotSentence result ->
+        case result of
+            Ok url ->
+                ( { model | state = Loaded url }, Cmd.none)
+
+            Err e ->
+                ( { model | state = Failure e }, Cmd.none)
+
+    GotPartsSentence result ->
         case result of
             Ok url ->
                 ( { model | state = Loaded url }, Cmd.none)
@@ -141,7 +143,8 @@ viewSentence model =
                 _ = Debug.log "model" model
             in
                 div [ class "base_ly" ]
-                    [ h2 [] [ text "タイトル"]
+                    [ Html.img [ src "http://placehold.it/640x340/27709b/ffffff" ] []
+                    , h2 [] [ text "タイトル"]
                     , p [] [ text ("名前：" ++ (Debug.toString error)) ] 
                     , h2 [] [ text "タイトル"]
                     , p [] [ text ("名前：" ++ (Debug.toString error)) ] 
@@ -163,22 +166,16 @@ viewSentence model =
                 , h2 [] [ text "基本情報" ]
                 , p [] [ text about.basic ]
                 , h2 [] [ text "エピソード" ]
-                , p [] [ text about.episode ]
+               null [] [] , p [] [ text about.episode ]
                 , h2 [] [ text "アピールポイント" ]
                 , p [] [ text about.appeal ]
                 , h2 [] [ text "Eメール" ]
                 , p [] [ text about.email ]
                 ]
 
-{-
-                [ button [ onClick model.about ] [ text "題名" ]
-                , button [ onClick model.about ] [ text "名前" ]
-                , button [ onClick model.about ] [ text "基本" ]
-                , button [ onClick model.about ] [ text "エピソード" ]
-                , button [ onClick model.about ] [ text "アピール" ]
-                , button [ onClick model.about ] [ text "Eメール" ]
-                ]
--} 
+-- ボタンをセットしてそこを押したら対応する文章が出てくるように作りたいのにボタンがうまくいかない
+
+
     
 -- HTTP
 
