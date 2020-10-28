@@ -13,6 +13,7 @@ import Json.Decode as D exposing (Decoder, field, string, map, map6, decodeStrin
 
 import Http
 import Url exposing (toString)
+import Html.Attributes exposing (href)
 
 
 -- MAIN
@@ -62,7 +63,6 @@ init _ =
 type Msg
     = GotWaiting
     | GotSentence (Result Http.Error AboutJson)
-    | GotPartsSentence (Result Http.Error AboutJson) 
 
 
 
@@ -73,14 +73,6 @@ update msg model =
         (model, getAboutJson)
 
     GotSentence result ->
-        case result of
-            Ok url ->
-                ( { model | state = Loaded url }, Cmd.none)
-
-            Err e ->
-                ( { model | state = Failure e }, Cmd.none)
-
-    GotPartsSentence result ->
         case result of
             Ok url ->
                 ( { model | state = Loaded url }, Cmd.none)
@@ -161,12 +153,18 @@ viewSentence model =
         Loaded about ->
             div [ class "base_ly"]
                 [ Html.img [ src "http://placehold.it/640x340/27709b/ffffff" ] []
+                , a [ href "#" ] [ text "題名" ]
+                , a [ href "#" ] [ text "名前" ]
+                , a [ href "#" ] [ text "基本" ]
+                , a [ href "#" ] [ text "エピソード" ]
+                , a [ href "#" ] [ text "アピール" ]
+                , a [ href "#" ] [ text "Eメール" ]
                 , h2 [] [ text about.title ]
                 , p [] [ text ("名前：" ++ about.name) ]
                 , h2 [] [ text "基本情報" ]
                 , p [] [ text about.basic ]
                 , h2 [] [ text "エピソード" ]
-               null [] [] , p [] [ text about.episode ]
+                , p [] [ text about.episode ]
                 , h2 [] [ text "アピールポイント" ]
                 , p [] [ text about.appeal ]
                 , h2 [] [ text "Eメール" ]
@@ -174,7 +172,7 @@ viewSentence model =
                 ]
 
 -- ボタンをセットしてそこを押したら対応する文章が出てくるように作りたいのにボタンがうまくいかない
-
+-- titleにつながるリンクとかそれぞれ作る
 
     
 -- HTTP
