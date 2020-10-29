@@ -15,13 +15,7 @@ import Url.Parser exposing (parse)
 
 type Route
     = Top
-    | User String
-    | Repo String String
-
-
-
-type UrlAbout 
-    = UrlTitle String
+    | UrlTitle String
     | UrlName String
     | UrlBasic String
     | UrlEpisode String
@@ -34,8 +28,8 @@ type UrlAbout
 routeParser : Parser (Route -> a) a
 routeParser =
     oneOf
-        [ map User  (s "user" </> string)
-        , map Repo  (s "user" </> string </> s "repo" </> string)
+        [ map Top top
+        , map UrlTitle (s "title")
         ]
 
 
@@ -48,6 +42,6 @@ suite =
         [ test "トップ" <|
             \_ ->
                 Url.fromString "http://localhost.com/"
-                    |> Maybe.andThen parse 
-                    |> Expect.equal (Just Top)
+                    |> Maybe.andThen parse
+                    |> Expect.equal (Result.Ok)
         ]

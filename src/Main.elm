@@ -19,11 +19,13 @@ import Html.Attributes exposing (href)
 -- MAIN
 main : Program () Model Msg
 main =
-    Browser.element
+    Browser.application
         { init = init
         , update = update
         , subscriptions = subscriptions
         , view = view
+        , onUrlRequest : UrlRequest -> msg
+        , onUrlChange : Url -> msg
         }
 
 

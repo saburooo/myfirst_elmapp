@@ -125,24 +125,3 @@ aboutChoiceDecoder about =
     case about of
         Title -> 
             (D.field "title" D.string)
-
-
-type Route
-    = Top
-    | GoAbout String
-
-
-parse : Url -> Maybe Route
-parse url =
-    Debug.todo "implement parser"
-
-
-parseSuite : Test
-parseSuite =
-    describe "Route"
-        [ test "should parse URL " <|
-            \_ ->
-                Url.fromString "http://localhost.com/"
-                    |> Maybe.andThen Route.parse
-                    |> Expect.equal (Just Route.Top)
-        ]
