@@ -101,14 +101,6 @@ suite =
 
 
 
-getAboutJson : Cmd Msg
-getAboutJson =
-    Http.get
-        { url = "http://127.0.0.1:8000/api/1"
-        , expect = Http.expectJson GotSentence aboutDecoder
-        }
-
-
 aboutDecoder : Decoder AboutJson
 aboutDecoder =
     map6 AboutJson
@@ -120,8 +112,3 @@ aboutDecoder =
         (D.field "email" D.string)
 
 
-aboutChoiceDecoder : About -> Cmd Msg
-aboutChoiceDecoder about =
-    case about of
-        Title -> 
-            (D.field "title" D.string)

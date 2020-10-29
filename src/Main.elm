@@ -24,8 +24,8 @@ main =
         , update = update
         , subscriptions = subscriptions
         , view = view
-        , onUrlRequest : UrlRequest -> msg
-        , onUrlChange : Url -> msg
+        , onUrlRequest = UrlRequested
+        , onUrlChange = UrlChanged
         }
 
 

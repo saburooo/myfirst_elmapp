@@ -9,18 +9,27 @@ import Http exposing (Expect)
 import Expect
 import Url.Parser exposing (parse)
 
+import Test.Html.Event as HtEvent
+
+
 
 
 -- MODEL
 
+type alias Model =
+    { route : Route
+    }
+
+
+
 type Route
     = Top
-    | UrlTitle String
-    | UrlName String
-    | UrlBasic String
-    | UrlEpisode String
-    | UrlAppeal String
-    | UrlEmail String
+    | TitlePage String
+    | NamePage String
+    | BasicPage String
+    | EpisodePage String
+    | AppealPage String
+    | EmailPage String
 
 
 
@@ -28,20 +37,13 @@ type Route
 routeParser : Parser (Route -> a) a
 routeParser =
     oneOf
-        [ map Top top
-        , map UrlTitle (s "title")
+        [ map Top (s "/")
+        , map TitlePage (s "title" </> string)
+        , map NamePage (s "name" </> string)
+        , map BasicPage (s "base" </> string)
+        , map EpisodePage (s "episode" </> string)
+        , map AppealPage (s "appeal" </> string)
+        , map EmailPage (s "email" </> string)
         ]
 
 
-
-
-
-suite : Test
-suite =
-    describe "URLのパースをテストできるのか"
-        [ test "トップ" <|
-            \_ ->
-                Url.fromString "http://localhost.com/"
-                    |> Maybe.andThen parse
-                    |> Expect.equal (Result.Ok)
-        ]
