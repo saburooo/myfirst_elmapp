@@ -34,6 +34,7 @@ main =
 type alias Model =
     { about : About
     , state : State
+    , route : Route
     }
 
 
@@ -43,6 +44,7 @@ type State
     | Loaded AboutJson
 
 
+
 type About 
     = Title
     | Name
@@ -50,6 +52,7 @@ type About
     | Episode
     | Appeal
     | Email
+
 
 
 

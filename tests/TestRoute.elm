@@ -1,49 +1,33 @@
-module TestRoute exposing (..)
+module TestRoute exposing (suite)
 
-import Url exposing (Url)
-import Test exposing (Test)
-import Test exposing (describe)
-import Test exposing (test)
-import Url.Parser exposing (Parser, (</>), map, oneOf, s, string)
-import Http exposing (Expect)
-import Expect
-import Url.Parser exposing (parse)
-
-import Test.Html.Event as HtEvent
+import Expect exposing (..)
+import Fuzz exposing (..)
+import Route exposing (Route)
+import Test exposing (..)
+import Url
 
 
+testParse : String -> String -> Maybe Route -> Test
+testParse name path expectedRoute =
+    test name <|
+        \_ ->
+            Url.fromString ("http://example.com" ++ path)
+                |> Maybe.andThen Route.parse
+                |> Expect.equal expectedRoute
 
 
--- MODEL
-
-type alias Model =
-    { route : Route
-    }
-
-
-
-type Route
-    = Top
-    | TitlePage String
-    | NamePage String
-    | BasicPage String
-    | EpisodePage String
-    | AppealPage String
-    | EmailPage String
-
-
-
-
-routeParser : Parser (Route -> a) a
-routeParser =
-    oneOf
-        [ map Top (s "/")
-        , map TitlePage (s "title" </> string)
-        , map NamePage (s "name" </> string)
-        , map BasicPage (s "base" </> string)
-        , map EpisodePage (s "episode" </> string)
-        , map AppealPage (s "appeal" </> string)
-        , map EmailPage (s "email" </> string)
+suite : Test
+suite =
+    describe "Route"
+        [ testParse "should parse Top" "/" (Just Route.Top)
+        , testParse "should parse Top with queries" "/?dummy=value" (Just Route.Top)
+        , testParse "should parse Top with hash" "/#dummy" (Just Route.Top)
+        , testParse "should parse TitlePage" "/title" (Just (Route.TitlePage "title"))
+        , testParse "should parse NamePage" "/name" (Just (Route.NamePage "name"))
+        , testParse "should parse BasicPage" "/basic" (Just (Route.BasicPage "base"))
+        , testParse "should parse EpisodePage" "/episode" (Just (Route.EpisodePage "episode"))
+        , testParse "should parse AppealPage" "/appeal" (Just (Route.AppealPage "appeal"))
+        , testParse "should parse EmailPage" "/email" (Just (Route.AppealPage "email"))
+        , testParse "should parse invalid path" "/foo/bar/baz" Nothing
         ]
-
-
+ 
